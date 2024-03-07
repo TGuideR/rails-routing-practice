@@ -1,10 +1,13 @@
+#Get URI AND HTML Method
 class RouteRecognizer
   require 'rails'
 
+  #Invalid Route
   class InvalidRoutesError < StandardError; end
+  #No Route Matching
   class NoMatchingRouteError < StandardError; end
 
-  attr_accessor :router, :routes_as_string
+  attr_reader :router, :routes_as_string
   def initialize(string='')
     @routes_as_string = string
     @routes = ActionDispatch::Routing::RouteSet.new
@@ -26,18 +29,18 @@ class RouteRecognizer
     all_params
   end
 
-  
+  #Handle Rack Request
   class RackRequest
-    attr_accessor :method, :uri, :query_string, :path, :env
+    attr_reader :method, :uri, :query_string, :path, :env
     def initialize(method,uri)
       @method,@uri = method,uri
-      set_query_string!
-      set_env!
+      set_query_string
+      set_env
     end
     
     private
 
-    def set_env!
+    def set_env
       @env = {
         'REQUEST_URI' => uri,
         'PATH_INFO' => path,
@@ -46,7 +49,7 @@ class RouteRecognizer
       @env.merge!({'QUERY_STRING' => query_string}) if query_string
     end
 
-    def set_query_string!
+    def set_query_string
       if @uri =~ /(.+)\?(.+)\Z/
         @path,@query_string = $1,$2
       else                        # no query string

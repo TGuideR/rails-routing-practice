@@ -3,6 +3,7 @@ require './lib/route_recognizer.rb'
 
 Result = Struct.new(:route, :controller, :action, :params, :error)
 
+#Handle Path for app
 class RouteRecognizerApp < Sinatra::Base
 
   get '/' do
